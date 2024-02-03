@@ -1,0 +1,16 @@
+{
+  "main": "./assets/js/index.js",
+  "dependencies": {
+    "htmx.org": "^1.9.10"
+  },
+  "scripts": {
+    "watch": "npx tailwindcss -i ./assets/css/input.css -o ./public/css/output.css --watch",
+    "build": "npx tailwindcss -i ./assets/css/input.css -o ./public/css/output.css",
+    "webpack": "webpack --config webpack.config.js"
+  },
+  "devDependencies": {
+    "@webpack-cli/generators": "^3.0.7",
+    "webpack": "^5.90.1",
+    "webpack-cli": "^5.1.4"
+  }
+}

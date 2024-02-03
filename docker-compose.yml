@@ -1,0 +1,42 @@
+version: '3.9'
+
+services:
+  php:
+    working_dir: /app
+    image: dunglas/frankenphp
+    # uncomment the following line if you want to use a custom Dockerfile
+    # build: .
+    # uncomment the following line if you want to run this in a production environment
+    # restart: always
+    environment:
+      - SERVER_NAME=${SERVER_NAME:-localhost}
+      - MERCURE_PUBLISHER_JWT_KEY=${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
+      - MERCURE_SUBSCRIBER_JWT_KEY=${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
+      # - MERCURE_PUBLISHER_JWT_KEY=${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
+      # - MERCURE_SUBSCRIBER_JWT_KEY=${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
+      # to run on worker mode uncomment the line above and change mode on env to worker
+      #  - FRANKENPHP_CONFIG=worker public/index.php
+    ports:
+      - "80:80" # HTTP
+      - "443:443" # HTTPS
+      - "443:443/udp" # HTTP/3
+    volumes:
+      - .:/app
+      - caddy_data:/data
+      - caddy_config:/config
+      - ./Caddyfile:/etc/caddy/Caddyfile
+    # comment the following line in production, it allows to have nice human-readable logs in dev
+    tty: true
+
+  ollama:
+    build: ./docker/ollama
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - "11434:11434"
+
+# Volumes needed for Caddy certificates and configuration
+volumes:
+  caddy_data:
+  caddy_config:

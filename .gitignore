@@ -1,0 +1,9 @@
+vendor/
+node_modules/
+llm/
+.env
+
+.DS_Store
+
+public/js
+public/css
