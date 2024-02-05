@@ -37,7 +37,7 @@ if ($mode === "dev") {
     return;
 }
 
-// This will only work in worker mode on container and not in dev
+// This will only work in orker mode on container and not in dev
 $maxRequests = 1;
 for ($nbRequests = 0, $running = true; ($nbRequests < $maxRequests) && ($running === true); ++$nbRequests) {
     $running = \frankenphp_handle_request($handler);
