@@ -16,27 +16,29 @@ class OllamaChat implements ChatInterface
     ) {
     }
 
-    public function ask(string $question): string
+    public function ask(string $question, string $model): string
     {
+        $phrase = $this->addPunctuation($question);
+        $ollamaUrl = sprintf('http://%s:%s', $_ENV['OLLAMA_HOST'], $_ENV['OLLAMA_PORT']);
+
         try {
             /** @var ResponseInterface&StreamableInterface */
-            // $response = $this->httpClient->request(
-            //     'POST',
-            //     'http://ollama:11434/api/generate',
-            //     [
-            //         'json' => [
-            //             'prompt' => $question,
-            //             'model' => 'phi2'
-            //         ]
-            //     ]
-            // );
+            $response = $this->httpClient->request(
+                'POST',
+                $ollamaUrl . '/api/generate',
+                [
+                    'json' => [
+                        'prompt' => $phrase,
+                        'model' => $model
+                    ]
+                ]
+            );
 
-            // if ($response->getStatusCode() !== 200) {
-            //     throw new \RuntimeException('Failed to ask question ' . $response->getContent());
-            // }
+            if ($response->getStatusCode() !== 200) {
+                throw new \RuntimeException('Failed to ask question ' . $response->getContent());
+            }
 
-            // $stream = $response->toStream();
-            $stream = fopen(__DIR__ . '/../../test.txt', 'r');
+            $stream = $response->toStream();
             while (feof($stream) === false) {
                 $line = fgets($stream);
                 if ($line === false) {
@@ -53,6 +55,19 @@ class OllamaChat implements ChatInterface
         } catch (\Exception $e) {
             throw new \RuntimeException($e->getMessage());
         }
+    }
+
+    private function addPunctuation(string $phrase): string
+    {
+        $lastChar = $phrase[strlen($phrase) - 1];
+
+        return match ($lastChar) {
+            '.' => $phrase,
+            ',' => $phrase . '.',
+            '!' => $phrase,
+            '?' => $phrase,
+            default => $phrase . '.',
+        };
     }
 
     private function getResponseFromLine(string $line): string

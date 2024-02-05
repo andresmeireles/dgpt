@@ -5,7 +5,6 @@ declare(strict_types=1);
 set_time_limit(120);
 ignore_user_abort(true);
 
-use Andre\Dgpt\Controller\ChatController;
 use DI\Bridge\Slim\Bridge;
 use Dotenv\Dotenv;
 
@@ -18,9 +17,17 @@ $diContainer = require __DIR__ . '/di_container.php';
 
 $app = Bridge::create($diContainer());
 
-$app->get('/', [ChatController::class, 'index']);
-$app->get('/c', [ChatController::class, 'chat']);
+$app->addBodyParsingMiddleware();
+$app->addRoutingMiddleware();
+$app->addErrorMiddleware(true, true, true);
 
+$web = require_once __DIR__ . '/../routes/web.php';
+$api = require_once __DIR__ . '/../routes/api.php';
+
+$web($app);
+$api($app);
+
+/** @psalm-suppress MissingClosureReturnType */
 $handler = fn () => $app->run();
 
 // To return to dev when is on worker mode, reload the container.
@@ -32,7 +39,7 @@ if ($mode === "dev") {
 
 // This will only work in worker mode on container and not in dev
 $maxRequests = 1;
-for ($nbRequests = 0, $running = true; ($nbRequests < $maxRequests) && $running; ++$nbRequests) {
+for ($nbRequests = 0, $running = true; ($nbRequests < $maxRequests) && ($running === true); ++$nbRequests) {
     $running = \frankenphp_handle_request($handler);
     // Call the garbage collector to reduce the chances of it being triggered in the middle of a page generation
     gc_collect_cycles();

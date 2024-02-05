@@ -8,5 +8,5 @@ interface ChatInterface
 {
     public const CHAT_TOPIC = 'chat';
 
-    public function ask(string $question): string;
+    public function ask(string $question, string $model): string;
 }

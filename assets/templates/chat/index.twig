@@ -1,20 +1,73 @@
 {% extends "base.twig" %}
 
 {% block body %}
-<h1 class="text-3xl font-bold underline">DGPT - A less cleaver gpt</h1>
-
-<button onclick="send()">send</button>
-
-<div id="chat"></div>
+<div id="chat" class="flex flex-col flex-grow">
+    <div id="conversation" class="space-y-2 overflow-y-auto h-5/6">
+        <div class="bg-slate-700/15 rounded p-3 ">
+            Ola sou o DGPT!
+        </div>
+    </div>
+    <div class="px-2 h-1/6 flex items-center">
+        <div class="w-full flex gap-2 self-center">
+            <textarea id="message" class="w-full rounded-lg p-2" placeholder="Send a message"></textarea>
+            <button
+            onclick="send()"
+            class="bg-green-500 hover:bg-green-600 self-center text-white items-center rounded p-2"
+            >Send</button>
+        </div>
+    </div>
+</div>
 
 <script>
+    const askDiv = document.createElement('div');
+    askDiv.classList.add('bg-slate-700/25', 'rounded', 'p-3');
+    const responseDiv = document.createElement('div');
+    responseDiv.classList.add('bg-slate-700/50', 'rounded', 'p-3', 'stream-response');
+
     const url = new URL('https://localhost/.well-known/mercure');
     url.searchParams.append('topic', 'chat');
     const es = new EventSource(url);
-    es.onmessage = (e) => document.getElementById('chat').innerHTML += e.data;
 
-    const send = () => {
-        fetch("https://localhost/c");
+    es.onmessage = (e) => {
+        const lastDiv = document.querySelector('#conversation > div:last-of-type');
+        lastDiv.innerHTML += e.data;
+        lastDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+    }
+
+    const send = async (el) => {
+        const message = document.querySelector('#message');
+        const question = message.value;
+        message.value = '';
+
+        const model = document.querySelector('input[type="radio"]:checked').value;
+
+        if (question.trim() === '') {
+            alert('Please enter a prompt');
+            return;
+        }
+
+        const divs = document.querySelectorAll('#conversation > div');
+        const lastSpot = document.querySelector('#conversation > div:last-of-type');
+
+        const ask = askDiv.cloneNode(true);
+        const response = responseDiv.cloneNode(true);
+        ask.innerHTML = question;
+        lastSpot.insertAdjacentElement('afterend', ask);
+        ask.insertAdjacentElement('afterend', response);
+        response.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+        
+        const chatReq = await fetch('/api/chat', {
+            method: 'POST',
+            body: JSON.stringify({ question, model }),
+        });
+
+        message.value = '';
+
+        if (chatReq.status == 400) {
+            ask.removeChild(response);
+            ask.innerHTML = chatReq.text;
+            return;
+        }
     }
 </script>
 {% endblock %}
