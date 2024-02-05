@@ -38,7 +38,7 @@ Como o projeto propriamente instalado e com um modelo instalado é so escrever s
 
 Os LLM's (large language model) sao centro deste projeto. É necessário ter ao menos um LLM para que o chat funcione. Por padrão o projeto nao vem com nenhum LLM, por causa do seu tamanho (eles costumam ser bem grandes).
 
-O primeiro passo para adicionar um llm é baixar um modelo, eles pdoem ser encontrados no site do hugging faces, os modelos baixados devem ser no formato `gguf`, baixe um que se adeque a sua maquina, um modelo de 2_7B de parametros normalmente pede 2G de memoria ram um modelo de 7B necessita de 7 a 8GB e assim por diante.
+O primeiro passo para adicionar um llm é baixar um modelo, eles podem ser encontrados no site do [huggingface](https://huggingface.co), os modelos baixados devem ser no formato `gguf`, baixe um que se adéque a sua maquina, um modelo de 2_7B de parâmetros normalmente pede 2G de memoria ram um modelo de 7B necessita de 7 a 8GB e assim por diante.
 
 Com um modelo baixado adicione esse modelo na pasta `llm` ou pasta que voce definiu no arquivo `.env` dentro da pasta crie um arquivo com o mesmo nome do modelo mas sem nenhuma extensão, por exemplo, baixei o modelo `openchat_3.5.Q2_K.gguf` entrao crio um arquivo `openchat_3.5.Q2_K` (sem extensão alguma), o conteúdo deste arquivo deve ser:
 
