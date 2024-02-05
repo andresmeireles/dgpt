@@ -62,3 +62,5 @@ O primeiro passo é no arquivo `.env` mudar o `MODE` para `prod` ou `worker` no 
 
 Depois reinicie o container do php.
 
+Na minha percepção o worker mode nao faz muita diferença nesta aplicação, da sua arquitetura atual, pois ela faz chamadas a outro servidor, porem se a abordagem com a ia for feita de outro modo, usando o llama.cpp por exemplo, onde o processamento é local, acho que o workermode traria mais benefícios, acredito que houve alguma melhora de performance, mas nao tanta nesse caso de uso.  
+
