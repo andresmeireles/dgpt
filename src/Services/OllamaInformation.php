@@ -90,6 +90,9 @@ class OllamaInformation implements ModelInformationInterface
         }
     }
 
+    /**
+     * @return string[]
+     */
     public function availableModels(): array
     {
         $files = scandir($this->ollamaLLMPath);
