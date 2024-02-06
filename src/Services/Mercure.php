@@ -13,8 +13,10 @@ class Mercure implements MercureInterface
     ) {
     }
 
+    // TODO: improve this function to handler errors
     public function publish(string $message, string $topic): void
     {
+        $mercureJwt = $_ENV['MERCURE_JWT'];
         $this->httpClient->request(
             'POST',
             'https://localhost/.well-known/mercure',
@@ -24,7 +26,7 @@ class Mercure implements MercureInterface
                     'topic' => $topic
                 ],
                 'headers' => [
-                    'Authorization' => 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJtZXJjdXJlIjp7InB1Ymxpc2giOlsiKiJdLCJzdWJzY3JpYmUiOlsiKiJdfX0.bVXdlWXwfw9ySx7-iV5OpUSHo34RkjUdVzDLBcc6l_g'
+                    'Authorization' => sprintf('Bearer %s', $mercureJwt)
                 ]
             ]
         );

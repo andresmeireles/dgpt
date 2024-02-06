@@ -44,7 +44,7 @@ class OllamaChat implements ChatInterface
                 if ($line === false) {
                     continue;
                 }
-                // while (($line = fgets($stream)) === false) {
+
                 $response = $this->getResponseFromLine($line);
                 $this->mercure->publish($response, topic: self::CHAT_TOPIC);
             }

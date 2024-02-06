@@ -6,3 +6,5 @@ llm/
 .vscode
 
 .DS_Store
+
+.phpunit.cache/

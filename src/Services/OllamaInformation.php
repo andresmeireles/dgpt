@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Andre\Dgpt\Services;
 
+use League\Flysystem\FilesystemOperator;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class OllamaInformation implements ModelInformationInterface
@@ -12,7 +13,8 @@ class OllamaInformation implements ModelInformationInterface
     private readonly string $ollamaUrl;
 
     public function __construct(
-        private readonly HttpClientInterface $httpClient
+        private readonly HttpClientInterface $httpClient,
+        private readonly FilesystemOperator $filesystem
     ) {
         $this->ollamaLLMPath = __DIR__ . '/../..' . $_ENV['OLLAMA_LLM_PATH'];
         $this->ollamaUrl = sprintf('http://%s:%s', $_ENV['OLLAMA_HOST'], $_ENV['OLLAMA_PORT']);
@@ -39,9 +41,9 @@ class OllamaInformation implements ModelInformationInterface
 
     private function modelExists(string $model): bool
     {
-        $models = scandir($this->ollamaLLMPath);
+        $path = $this->ollamaLLMPath . '/' . $model;
 
-        return in_array($model, $models);
+        return $this->filesystem->fileExists($path);
     }
 
     private function modelIsLoaded(string $model): bool
@@ -79,7 +81,7 @@ class OllamaInformation implements ModelInformationInterface
                 throw new \RuntimeException('Failed to load model ' . $request->getContent());
             }
 
-            $response = json_decode($request->getContent(), true);
+            $response = json_decode($request->getContent(), true, flags: JSON_THROW_ON_ERROR);
 
             return $response['status'] === 'success';
         } catch (\Throwable $e) {
