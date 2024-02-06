@@ -3,4 +3,6 @@ node_modules/
 llm/
 .env
 
+.vscode
+
 .DS_Store
