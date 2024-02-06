@@ -45,7 +45,7 @@ class MercureTest extends TestCase
                         'topic' => 'topic'
                     ],
                     'headers' => [
-                        'Authorization' => 'Bearer '
+                        'Authorization' => 'Bearer abc'
                     ]
                 ]
             );
