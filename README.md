@@ -64,3 +64,8 @@ Depois reinicie o container do php.
 
 Na minha percepção o worker mode nao faz muita diferença nesta aplicação, da sua arquitetura atual, pois ela faz chamadas a outro servidor, porem se a abordagem com a ia for feita de outro modo, usando o llama.cpp por exemplo, onde o processamento é local, acho que o workermode traria mais benefícios, acredito que houve alguma melhora de performance, mas nao tanta nesse caso de uso.  
 
+# Editar frontend
+
+Para alterar o frontend é necessario instalar as bibliotecas do nodejs para builder o front, para isso é necessario ter o nodejs e npm, apos isso instale as depdendencias de desenvolvimento.
+
+Apos instaldas você pode executar o comando `npm run watch` para o tailwind atualizar o css em cada alteraçāo nos arquivos `.twig`. O htmx pode ser rebuildado com o comando `npm run webpack` para rebuildar os arquivos js.
