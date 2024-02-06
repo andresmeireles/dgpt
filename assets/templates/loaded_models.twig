@@ -1,0 +1,6 @@
+{% for model in models %}
+                        <label>
+                            <input checked="{{ loop.first ? 'checked' : '' }}" type="radio" name="model" value="{{ model }}">
+                            {{ model }}
+                        </label>
+                    {% endfor %}

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>DGPT</title>
     <link rel="stylesheet" href="/css/output.css">
     <script src="/js/app.js"></script>
 </head>
@@ -14,31 +14,13 @@
                 <div class="text-5xl font-bold mb-16">
                     DGPT
                 </div>
-                <div class="mb-16 flex flex-col space-y-2">
+                <div hx-get="/models" hx-trigger="load delay:1s" hx-target="#models" class="mb-16 flex flex-col space-y-2">
                     <span>Modelo:</span>
-                    {% for model in models %}
-                        <label>
-                            <input checked="{{ loop.first ? 'checked' : '' }}" type="radio" name="model" value="{{ model }}">
-                            {{ model }}
-                        </label>
-                    {% endfor %}
+                    <div id="models" class="flex-col flex gap-2"></div>
                 </div>
-                <div class="flex-col">
-                    <button class="bg-blue-500 hover:bg-blue-400 rounded w-full p-3 mb-4">
-                        Atualizar todos os modelos
-                    </button>
-                    <div class="flex flex-col space-y-2">
-                        {% for a in available %}
-                            {% if a in models %}
-                                <span>{{a}} - OK</span>
-                            {% else %}
-                                <div class="flex gap-2">
-                                    <span>{{a}}</span>
-                                    <button onclick="add('{{a}}')" class="bg-blue-500 hover:bg-blue-400 rounded p-1 add-model">ADD</button>
-                                </div>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
+                <div class="flex-col" hx-get="/available" hx-target="#available" hx-trigger="load">
+                    <input id="reload-available" type="hidden" hx-get="/available" hx-target="#available" hx-trigger="click" />
+                    <div id="available" class="flex flex-col space-y-2"></div>
                 </div>
             </div>
         </div>

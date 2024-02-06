@@ -29,7 +29,7 @@ services:
     tty: true
 
   ollama:
-    build: ./docker/ollama
+    image: ollama/ollama
     working_dir: /app
     volumes:
       - .:/app

@@ -2,7 +2,7 @@
 
 ###### dependendo do modelo usado ele pode ser bem mais perspicaz 😁
 
-**dgpt** é uma sistema de chat com ia onde voce pode usar diversos modelos para conversa. Utiliza php com [frankenphp](https://frankenphp.dev) como runtime, [slim framework](https://www.slimframework.com), [twig](https://twig.symfony.com), [tailwind](https://tailwindcss.com). Utiliza o protocolo [mercure](https://mercure.rocks), uma alternativa ao websocket, para mensagens instantâneas no chat. Como motor de ia utiliza o [ollma](https://ollama.ai).
+**dgpt** é uma sistema de chat com ia onde voce pode usar diversos modelos para conversa. Utiliza php com [frankenphp](https://frankenphp.dev) como runtime, [slim framework](https://www.slimframework.com), [twig](https://twig.symfony.com), [tailwind](https://tailwindcss.com) e [htmx](https://htmx.org). Utiliza o protocolo [mercure](https://mercure.rocks), uma alternativa ao websocket, para mensagens instantâneas no chat. Como motor de ia utiliza o [ollma](https://ollama.ai).
 
 ## Setup do projeto
 

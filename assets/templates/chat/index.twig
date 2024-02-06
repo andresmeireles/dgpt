@@ -9,20 +9,63 @@
     </div>
     <div class="px-2 h-1/6 flex items-center">
         <div class="w-full flex gap-2 self-center">
-            <textarea id="message" class="w-full rounded-lg p-2" placeholder="Send a message"></textarea>
+            <button 
+                id="send-question"
+                class="hidden"
+                hx-post="/api/chat"
+                hx-trigger="click"
+                hx-params="question,model"
+                hx-include="[name='question'],[name='model']"
+            >submit</button>
+            <button id="add-conversation-template" 
+                class="hidden" 
+                hx-get="/conversation"
+                hx-target="#conversation"
+                hx-swap="beforeend"
+                hx-trigger="click"
+                hx-params="question"
+                hx-include="[name='question']"
+            >add template</button>
+            <input type="hidden" name="model" id="model" />
+            <textarea name="question" id="question" class="w-full rounded-lg p-2" placeholder="Send a message"></textarea>
             <button
-            onclick="send()"
-            class="bg-green-500 hover:bg-green-600 self-center text-white items-center rounded p-2"
+                id="submit-question"
+                onclick="clickForm()"
+                class="bg-green-500 hover:bg-green-600 self-center text-white items-center rounded p-2"
             >Send</button>
         </div>
     </div>
 </div>
 
 <script>
-    const askDiv = document.createElement('div');
-    askDiv.classList.add('bg-slate-700/25', 'rounded', 'p-3');
-    const responseDiv = document.createElement('div');
-    responseDiv.classList.add('bg-slate-700/50', 'rounded', 'p-3', 'stream-response');
+    const clickForm = (el) => {
+        const question = document.getElementById('question')
+        if (!question.value) {
+            alert('Please enter a question');
+            return;
+        }
+        const model = document.querySelector('input[type="radio"]:checked').value;
+        document.getElementById('model').value = model;
+
+        const addConversationTemplate = document.querySelector('#add-conversation-template');
+        const sendQuestion = document.querySelector('#send-question');
+
+        addConversationTemplate.click();
+        sendQuestion.click();
+
+        question.value = ''
+    }
+
+    document.addEventListener('htmx:beforeRequest', (el) => {
+        if (el.detail.pathInfo.requestPath === "/api/chat") {
+            document.getElementById('submit-question').classList.add('hidden');
+        }
+    });
+    document.addEventListener('htmx:afterRequest', (el) => {
+        if (el.detail.pathInfo.requestPath === "/api/chat") {
+            document.getElementById('submit-question').classList.remove('hidden');
+        }
+    });
 
     const url = new URL('https://localhost/.well-known/mercure');
     url.searchParams.append('topic', 'chat');
@@ -32,42 +75,6 @@
         const lastDiv = document.querySelector('#conversation > div:last-of-type');
         lastDiv.innerHTML += e.data;
         lastDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
-    }
-
-    const send = async (el) => {
-        const message = document.querySelector('#message');
-        const question = message.value;
-        message.value = '';
-
-        const model = document.querySelector('input[type="radio"]:checked').value;
-
-        if (question.trim() === '') {
-            alert('Please enter a prompt');
-            return;
-        }
-
-        const divs = document.querySelectorAll('#conversation > div');
-        const lastSpot = document.querySelector('#conversation > div:last-of-type');
-
-        const ask = askDiv.cloneNode(true);
-        const response = responseDiv.cloneNode(true);
-        ask.innerHTML = question;
-        lastSpot.insertAdjacentElement('afterend', ask);
-        ask.insertAdjacentElement('afterend', response);
-        response.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
-        
-        const chatReq = await fetch('/api/chat', {
-            method: 'POST',
-            body: JSON.stringify({ question, model }),
-        });
-
-        message.value = '';
-
-        if (chatReq.status == 400) {
-            ask.removeChild(response);
-            ask.innerHTML = chatReq.text;
-            return;
-        }
     }
 </script>
 {% endblock %}

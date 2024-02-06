@@ -16,6 +16,5 @@ return function (App $app): void {
     $app->group('/api', function (RouteCollectorProxyInterface $router) {
         $router->post('/chat', [ChatController::class, 'chat']);
         $router->get('/reload', [ModelController::class, 'reload']);
-        $router->post('/add', [ModelController::class, 'add']);
     });
 };

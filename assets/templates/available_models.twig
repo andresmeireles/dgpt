@@ -1,0 +1,27 @@
+{% for availableModel in available %}
+    {% if availableModel in models %}
+        <div class="flex justify-between">
+            <span>{{availableModel}}</span><span>OK</span>
+        </div>
+    {% else %}
+        <div class="flex justify-between gap-2">
+            <span>{{availableModel}}</span>
+            <form hx-post="/add" hx-target="#models">
+                <input type="hidden" name="model" value="{{availableModel}}">
+                <button id="add-model-button-n-{{loop.index}}" class="bg-blue-500 hover:bg-blue-400 rounded p-1 add-model flex">
+                    <img class="htmx-indicator h-2 w-2" src="/images/spinner.gif">
+                    ADD
+                </button>
+            </form>
+        </div>
+        <script>
+            document.addEventListener('htmx:afterRequest', (el) => {
+                const path = el.detail.pathInfo.finalRequestPath;
+                if (path === '/add') {
+                    const reloadAvailable = document.getElementById('reload-available');
+                    reloadAvailable.click();
+                }
+            })
+        </script>
+    {% endif %}
+{% endfor %}

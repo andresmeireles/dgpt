@@ -37,9 +37,31 @@ class OllamaInformation implements ModelInformationInterface
         );
     }
 
+    private function modelExists(string $model): bool
+    {
+        $models = scandir($this->ollamaLLMPath);
+
+        return in_array($model, $models);
+    }
+
+    private function modelIsLoaded(string $model): bool
+    {
+        $loaded = $this->loadedModels();
+
+        return in_array($model, $loaded);
+    }
+
     public function loadModel(string $model): bool
     {
-        // $content = file_get_contents($this->ollamaLLMPath . '/' . $model);
+        $modelExists = $this->modelExists($model);
+        if (!$modelExists) {
+            return false;
+        }
+
+        if ($this->modelIsLoaded($model)) {
+            return false;
+        }
+
         try {
             $request = $this->httpClient->request(
                 'POST',
@@ -48,7 +70,6 @@ class OllamaInformation implements ModelInformationInterface
                     'json' => [
                         'name' => $model,
                         'stream' => false,
-                        // 'modelfile' => $content
                         'path' => $this->ollamaLLMPath . '/' . $model
                     ]
                 ]

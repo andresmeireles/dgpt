@@ -12,15 +12,21 @@ use Slim\Views\Twig;
 
 class ChatController
 {
-    public function index(Response $response, Twig $twig, ModelInformationInterface $modelInformation): Response
+    public function index(Response $response, Twig $twig): Response
     {
-        $loadedModels = $modelInformation->loadedModels();
-        $availableModels = $modelInformation->availableModels();
+        return $twig->render($response, 'chat/index.twig');
+    }
 
-        return $twig->render($response, 'chat/index.twig', [
-            'models' => $loadedModels,
-            'available' => $availableModels
-        ]);
+    public function responseTemplate(Request $request, Response $response, Twig $twig): Response
+    {
+        $question = $request->getQueryParams()['question'] ?? '';
+        if ($question === '') {
+            $response->getBody()->write('Please enter a question.');
+
+            return $response->withStatus(500);
+        }
+
+        return $twig->render($response, 'chat/template.twig', ['question' => $question]);
     }
 
     public function chat(Request $request, Response $response, ChatInterface $chat): Response
